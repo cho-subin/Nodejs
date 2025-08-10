@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/web-n/Nodejs#readme",
   "dependencies": {
-    "sanitize-html": "^1.18.2"
+    "express": "^5.1.0",
+    "sanitize-html": "^1.27.5"
   }
 }
