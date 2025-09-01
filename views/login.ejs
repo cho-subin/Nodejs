@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>로그인</title>
+    <style>
+      /* 기존 스타일 유지 */
+      .login-form {
+        max-width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        margin: 8px 0;
+      }
+      button {
+        width: 100%;
+        padding: 8px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+
+      /* 헤더 스타일 추가 */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #f8f9fa;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+      }
+      .header-title {
+        margin: 0;
+        color: #333;
+      }
+      .auth-btn {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .auth-btn:hover {
+        background-color: #0056b3;
+      }
+      .main-content {
+        margin-top: 80px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1 class="header-title">Node.js</h1>
+      <% if (typeof user !== "undefined" && user) { %>
+      <a href="/logout" class="auth-btn" style="background-color: #dc3545"
+        >로그아웃</a
+      >
+      <% } else { %>
+      <a href="/login" class="auth-btn">로그인</a>
+      <% } %>
+    </div>
+
+    <div class="main-content">
+      <div class="login-form">
+        <h1>로그인</h1>
+        <form method="post" action="/login">
+          <input
+            type="text"
+            name="username"
+            placeholder="아이디"
+            required
+          /><br />
+          <input
+            type="password"
+            name="password"
+            placeholder="비밀번호"
+            required
+          /><br />
+          <button type="submit">로그인</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -16,7 +16,96 @@ const sanitizeHtml = require("sanitize-html");
 const template = require("./lib/template.js");
 // helmet : 보안 라이브러리
 const helmet = require("helmet");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
 app.use(helmet());
+
+// 보안 + 기본 세팅
+app.use(helmet());
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(compression());
+
+app.set("view engine", "ejs"); // ejs 템플릿 엔진 사용
+app.set("views", "./views"); // views 폴더에 템플릿을 저장할 것임
+
+// 🔑 세션
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: false,
+    store: new FileStore(),
+  })
+);
+
+// 🚀 Passport 설정
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 유저 데이터 (DB 대신 하드코딩)
+const users = [{ id: 1, username: "subin", password: "1234" }];
+
+// 로컬 id, 비밀번호 인증 LocalStrategy
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
+
+    if (user) return done(null, user);
+
+    return done(null, false, { message: "아이디/비밀번호 틀림" });
+  })
+);
+
+// LocalStrategy 성공하면 user.id를 세션에 저장
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+// 아래의 요청마다 passport가 세션을 확인해서 DB(or 배열)에서 유저 객체를 꺼내
+// req.user에 넣어줌
+passport.deserializeUser((id, done) => {
+  const user = users.find((u) => u.id === id);
+  done(null, user);
+});
+
+// 인증 체크 미들웨어(로그인 여부 체크)
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+
+  res.redirect("/login");
+}
+
+// 로그인 페이지
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/", // 로그인 성공 → main.js 대시보드로
+    failureRedirect: "/login",
+  })
+);
+
+// 로그아웃
+app.get("/logout", (req, res) => {
+  req.logout(() => {
+    res.redirect("/login");
+  });
+});
+
+// 여기부터 기존 main.js 라우트들은 로그인 필요!
+app.use((req, res, next) => {
+  if (!req.isAuthenticated()) return res.redirect("/login");
+  next();
+});
 
 const topicRouter = require("./routes/topic");
 const indexRouter = require("./routes/index");
@@ -37,6 +126,11 @@ app.use((request, response, next) => {
 
     next(); // 그 다음 미들웨어 실행
   });
+});
+
+app.use((req, res, next) => {
+  res.locals.user = req.user; // 모든 템플릿에서 user 변수 사용 가능
+  next();
 });
 
 app.use("/", indexRouter);

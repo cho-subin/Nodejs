@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WEB1 - Welcome</title>
+    <meta charset="utf-8" />
+    <style>
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #f8f9fa;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+      }
+      .header-title {
+        margin: 0;
+        color: #333;
+      }
+      .auth-btn {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .auth-btn:hover {
+        background-color: #0056b3;
+      }
+      .main-content {
+        margin-top: 80px;
+      }
+    </style>
+  </head>
+  <body>
+    <% include ./partials/header %>
+
+    <div class="main-content">
+      <h1><a href="/">WEB</a></h1>
+      <ol>
+        <li><a href="/topic/1">HTML</a></li>
+        <li><a href="/topic/2">CSS</a></li>
+        <li><a href="/topic/3">JavaScript</a></li>
+      </ol>
+      <h2>WEB</h2>
+      <p>
+        The World Wide Web (abbreviated WWW or the Web) is an information space
+        where documents and other web resources are identified by URLs,
+        interlinked by hypertext links, and can be accessed via the Internet.
+      </p>
+    </div>
+  </body>
+</html>
