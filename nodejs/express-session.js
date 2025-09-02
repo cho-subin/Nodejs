@@ -9,13 +9,14 @@ const bodyParser = require("body-parser");
 const app = express();
 
 // EJS 템플릿 엔진
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs"); // ejs 템플릿 엔진 사용
+app.set("views", path.join(__dirname, "../views")); // 절대 경로로 설정
 
 // body-parser
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static("public")); // 정적 파일 제공
 
-// 세션 설정
+// 세션 설정 : 브라우저 쿠키에 세션ID 저장, 로그인 상태 유지
 app.use(
   session({
     secret: "keyboard cat",
@@ -27,7 +28,7 @@ app.use(
 
 // Passport 초기화
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session()); // passport 세션 연동
 
 // 유저 데이터 (DB 대신 하드코딩)
 const users = [{ id: 1, username: "binsu", password: "1234" }];
@@ -43,18 +44,19 @@ passport.use(
   })
 );
 
-// 세션에 사용자 저장
+// 인증 성공하면 세션에 사용자 id 저장
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-// 세션에서 사용자 불러오기
+// 아래의 요청마다 passport가 세션을 확인해서 DB(or 배열)에서 유저 객체를 꺼내
+// req.user에 넣어줌
 passport.deserializeUser((id, done) => {
   const user = users.find((u) => u.id === id);
   done(null, user);
 });
 
-// 미들웨어 (로그인 여부 확인)
+// 인증 체크 미들웨어(로그인 여부 체크)
 function isAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect("/login");
@@ -72,8 +74,8 @@ app.get("/login", (req, res) => {
 app.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
+    successRedirect: "/", // 성공하면 메인 페이지로
+    failureRedirect: "/login", // 실패하면 로그인 페이지로
   })
 );
 

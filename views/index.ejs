@@ -34,11 +34,15 @@
       }
       .main-content {
         margin-top: 80px;
+        margin-left: 40px;
+        margin-right: 40px;
+        padding-top: 20px;
       }
     </style>
   </head>
   <body>
-    <% include ./partials/header %>
+    <!-- HTML을 그대로 출력 (HTML 태그가 렌더링됨) -->
+    <%- include('./partials/header') %>
 
     <div class="main-content">
       <h1><a href="/">WEB</a></h1>
@@ -48,10 +52,12 @@
         <li><a href="/topic/3">JavaScript</a></li>
       </ol>
       <h2>WEB</h2>
-      <p>
-        The World Wide Web (abbreviated WWW or the Web) is an information space
-        where documents and other web resources are identified by URLs,
-        interlinked by hypertext links, and can be accessed via the Internet.
+      <img
+        src="images/hateJS.gif"
+        style="width: 300px; display: block; margin-top: 10px"
+      />
+      <p style="margin-top: 45px; width: 60%">
+        js는 웹 페이지를 동적으로 만들어주는 언어입니다만 타입이 너무 유연하죠.
       </p>
     </div>
   </body>
